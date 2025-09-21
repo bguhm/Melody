@@ -155,8 +155,8 @@ header img {
   gap: 20px;
   padding: 20px;
   background-color: #d3d3d3;
-  min-height: calc(100vh - 120px);
   justify-items: center;
+  align-items: start;   /* keep cards at the top */
 }
 
 /* Album Card */
