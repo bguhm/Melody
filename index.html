@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Music Library</title>
+    <link rel="icon" href="system/images/music.png" />
+    <link rel="stylesheet" href="css/loading-screen.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/quote.css" />
+    <link rel="stylesheet" href="css/themes.css" />
+    <link rel="stylesheet" href="css/commands.css" />
+    <meta name="author" content="Bg.uhm by rhap5ody" />
+    <meta name="keywords" content="music, library, albums, github, rhap5ody" />
+
+    <!-- Scripts -->
+    <script src="system/js/settings.js" defer></script>
+    <script src="js/quote.js" defer></script>
+    <script src="js/searcherror.js" defer></script>
+    <script src="js/carousel.js" defer></script>
+    <script src="js/commands.js" defer></script>
+
+    <!-- Discord Widget -->
+    <script src="https://cdn.jsdelivr.net/npm/@widgetbot/crate@3" async defer>
+      new Crate({
+        server: '1273329263923302430',
+        channel: '1329289920845713471'
+      })
+    </script>
+  </head>
+  <body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+      <div class="loader-gif">
+        <img src="loading.gif" alt="Loading..." id="loaderImage"/>
+      </div>
+      <div class="counter" id="counter">0%</div>
+      <div class="loading-text">Loading...</div>
+    </div>
+
+    <!-- Header / Nav -->
+    <header>
+      <nav class="nav-links">
+        <a href="system/pages/home.html">Home</a>
+        <a href="system/pages/favorite.html">Favorites</a>
+        <a href="system/pages/discover.html">Discover</a>
+        <a href="system/pages/settings.html">Settings</a>
+        <a href="system/pages/support.html">Support</a>
+        <a href="system/pages/info.html">Info</a>
+      </nav>
+
+      <!-- Search + profile -->
+      <div class="header-controls">
+        <div class="search-box">
+          <input type="text" id="searchInputHeader" placeholder="Search albums..." />
+          <button id="searchBtnHeader">
+            <img src="search3.png" alt="Search" />
+          </button>
+        </div>
+        <a href="system/pages/profile.html"><img src="profile.png" alt="profile" id="pfp" /></a>
+        <img src="dashboard.png" alt="Dashboard" id="dashboardBtn" />
+      </div>
+    </header>
+
+    <!-- Marquee -->
+    <div id="quoteWrapper">
+      <p id="quoteBox"></p>
+    </div>
+
+    <!-- Music Library -->
+    <main>
+      <div id="musicLibrary" class="grid-container">
+        <!-- Example album cards -->
+        <div class="album-card" onclick="loadAlbum('maybe-maybe.js')">
+          <img src="covers/maybe-maybe.jpg" alt="Maybe Maybe" />
+          <h3>Maybe (Maybe)</h3>
+          <p>Rhap5ody</p>
+        </div>
+
+        <div class="album-card" onclick="loadAlbum('die-lit.js')">
+          <img src="covers/die-lit.jpg" alt="Die Lit" />
+          <h3>Die Lit</h3>
+          <p>Playboi Carti</p>
+        </div>
+
+        <div class="album-card" onclick="loadAlbum('whole-lotta-red.js')">
+          <img src="covers/whole-lotta-red.jpg" alt="Whole Lotta Red" />
+          <h3>Whole Lotta Red</h3>
+          <p>Playboi Carti</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Back to Top -->
+    <button id="toTopBtn">⬆ Top</button>
+
+    <!-- Footer -->
+    <footer>
+      <a href="system/pages/sources.html">sources</a>
+      <a href="system/pages/contributors.html">contribute</a>
+      <a href="system/pages/discord.html">Discord</a>
+      <a href="system/pages/bugsNfixes.html">Bugs & fixes</a>
+      <a href="system/pages/contact.html">Socials</a>
+      <a href="system/pages/version-log.html">version V0.7.2</a>
+    </footer>
+
+    <!-- Dashboard -->
+    <div id="dashboardMenu" class="dashboard-menu">
+      <a href="music-player.html">Music Player</a>
+      <a href="system/pages/settings-themes.html">Themes</a>
+      <a href="system/pages/credits.html">Credits</a>
+      <a href="system/pages/alt.html">Alternative Links</a>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+      // Dashboard menu
+      document.addEventListener("DOMContentLoaded", () => {
+        const dashboardBtn = document.getElementById("dashboardBtn");
+        const dashboardMenu = document.getElementById("dashboardMenu");
+
+        dashboardBtn.onclick = function () {
+          dashboardMenu.style.display = dashboardMenu.style.display === "flex" ? "none" : "flex";
+        };
+
+        window.addEventListener("click", function (e) {
+          if (!dashboardBtn.contains(e.target) && !dashboardMenu.contains(e.target)) {
+            dashboardMenu.style.display = "none";
+          }
+        });
+      });
+
+      // Back to top button
+      const toTopBtn = document.getElementById("toTopBtn");
+      window.onscroll = function () {
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 200) {
+          toTopBtn.style.display = "block";
+        } else {
+          toTopBtn.style.display = "none";
+        }
+      };
+      toTopBtn.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+      // Load album dynamically
+      function loadAlbum(scriptName) {
+        const oldScript = document.getElementById("albumScript");
+        if (oldScript) oldScript.remove();
+
+        const script = document.createElement("script");
+        script.src = "albums/" + scriptName;
+        script.id = "albumScript";
+        document.body.appendChild(script);
+      }
+
+      // Live search
+      function filterAlbums(query) {
+        const input = query.toLowerCase();
+        const albums = document.querySelectorAll(".album-card");
+        albums.forEach(album => {
+          const title = album.querySelector("h3").textContent.toLowerCase();
+          const artist = album.querySelector("p").textContent.toLowerCase();
+          album.style.display = title.includes(input) || artist.includes(input) ? "block" : "none";
+        });
+      }
+
+      document.getElementById("searchInputHeader").addEventListener("keyup", function () {
+        filterAlbums(this.value);
+      });
+
+      document.getElementById("searchBtnHeader").addEventListener("click", function () {
+        const query = document.getElementById("searchInputHeader").value;
+        filterAlbums(query);
+      });
+    </script>
+  </body>
+</html>
